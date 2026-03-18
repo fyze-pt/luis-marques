@@ -16,11 +16,11 @@ import {
   Facebook
 } from 'lucide-react';
 import { translations, Language } from './translations';
-import pintorImg from './img/pintor.png';
-import portfolioImg1 from './img/1.png';
-import portfolioImg2 from './img/2.png';
-import portfolioImg3 from './img/3.png';
-import portfolioImg4 from './img/4.png';
+import pintorImg from './img/pintor.webp';
+import portfolioImg1 from './img/1.webp';
+import portfolioImg2 from './img/2.webp';
+import portfolioImg3 from './img/3.webp';
+import portfolioImg4 from './img/4.webp';
 
 export default function App() {
   const [lang, setLang] = useState<Language>('pt');
@@ -35,7 +35,45 @@ export default function App() {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
+  const handlePortfolioImageError = (event: React.SyntheticEvent<HTMLImageElement>) => {
+    const img = event.currentTarget;
+
+    if (img.dataset.fallbackApplied === 'true') {
+      return;
+    }
+
+    img.dataset.fallbackApplied = 'true';
+    img.src = portfolioImg1;
+  };
+
   const toggleLang = () => setLang(prev => prev === 'pt' ? 'en' : 'pt');
+
+  const portfolioItems = [
+    {
+      src: portfolioImg1,
+      title: 'Mural Residencial - Cascais',
+      className: 'md:col-span-2 md:row-span-2',
+      titleClassName: 'text-2xl',
+    },
+    {
+      src: portfolioImg2,
+      title: 'Interiores Modernos - Lisboa',
+      className: 'md:col-span-2',
+      titleClassName: 'text-xl',
+    },
+    {
+      src: portfolioImg3,
+      title: 'Projeto Decorativo',
+      className: '',
+      titleClassName: 'text-lg',
+    },
+    {
+      src: portfolioImg4,
+      title: 'Acabamento Premium',
+      className: '',
+      titleClassName: 'text-lg',
+    },
+  ];
 
   return (
     <div className="min-h-screen bg-white selection:bg-burnt-orange selection:text-white">
@@ -275,24 +313,20 @@ export default function App() {
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-4 gap-6 auto-rows-[300px]">
-            <div className="md:col-span-2 md:row-span-2 rounded-3xl overflow-hidden group relative">
-              <img src={portfolioImg1} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" referrerPolicy="no-referrer" />
-              <div className="absolute inset-0 bg-navy/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-end p-8">
-                <p className="text-2xl font-display font-bold">Mural Residencial - Cascais</p>
+            {portfolioItems.map((item, index) => (
+              <div key={item.title} className={`${item.className} rounded-3xl overflow-hidden group relative`}>
+                <img
+                  src={item.src}
+                  alt={item.title}
+                  className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+                  referrerPolicy="no-referrer"
+                  onError={handlePortfolioImageError}
+                />
+                <div className="absolute inset-0 bg-navy/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-end p-8">
+                  <p className={`${item.titleClassName} font-display font-bold`}>{item.title}</p>
+                </div>
               </div>
-            </div>
-            <div className="md:col-span-2 rounded-3xl overflow-hidden group relative">
-              <img src={portfolioImg2} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" referrerPolicy="no-referrer" />
-              <div className="absolute inset-0 bg-navy/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-end p-8">
-                <p className="text-xl font-display font-bold">Interiores Modernos - Lisboa</p>
-              </div>
-            </div>
-            <div className="rounded-3xl overflow-hidden group relative">
-              <img src={portfolioImg3} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" referrerPolicy="no-referrer" />
-            </div>
-            <div className="rounded-3xl overflow-hidden group relative">
-              <img src={portfolioImg4} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" referrerPolicy="no-referrer" />
-            </div>
+            ))}
           </div>
         </div>
       </section>
